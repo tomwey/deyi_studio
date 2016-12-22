@@ -1,0 +1,45 @@
+测试服务器地址：http://deyi-stage.shuiguoshe.com
+
+一、个人中心网页地址：
+
+新手攻略  /p/help
+关于     /p/about
+常见问题 /p/questions
+商务合作 /p/business
+
+二、积分商城产品详情页
+
+GET /item/{sku} sku参数为产品的sku值
+
+三、版本更新网页地址
+
+GET /version/info?os=Android&m=M571C&bv=1.0
+
+########### Android客户端不需要关心 #############
+1.关注任务回调
+GET /callback/ft
+    ?order=100233333   # 广告每一笔回调的唯一标识
+    &task_id=10034530  # 该广告主在得益平台的唯一标识，由得益平台提供
+    &uid=10003         # 用户通过微信公众号传入
+    &time=147892334    # 回调的时间戳
+    &sig=aldkdkdaaaa   # 参数签名的字符串
+    
+签名算法：md5(dev_secret（得益提供） + order + task_id + uid + time)
+
+2.分享任务回调
+GET /callback/st
+    ?order=100233333   # 广告每一笔回调的唯一标识
+    &task_id=10034530  # 该广告主在得益平台的唯一标识，由得益平台提供
+    &uid=10003         # 用户通过微信公众号传入
+    &time=147892334    # 回调的时间戳
+    &sig=aldkdkdaaaa   # 参数签名的字符串
+    
+签名算法：md5(dev_secret（得益提供） + order + task_id + uid + time)
+
+四、收徒网页地址
+
+邀请链接地址
+GET /shoutu?uid=10001
+
+收徒简介地址
+GET /shoutu/info?uid=10001
