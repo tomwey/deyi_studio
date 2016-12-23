@@ -154,6 +154,20 @@ module API
         end
       end
       
+      class EarningDetail < Base
+        expose :icon do |model, opts|
+          model.app_task.app.icon.url(:big)
+        end
+        expose :app_name do |model, opts|
+          model.app_task.app.name
+        end
+        expose :keywords do |model, opts|
+          model.app_task.keywords
+        end
+        expose :money
+        expose :created_at, as: :time, format_with: :chinese_datetime
+      end
+      
       # 收益摘要
       class EarnSummary < Base
         expose :task_type do |m, opts|
