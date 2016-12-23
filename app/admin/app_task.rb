@@ -4,7 +4,7 @@ ActiveAdmin.register AppTask do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
-permit_params :app_id, :name, :keywords, :task_steps, :special_price, :start_time, :end_time, :sort, :price, :put_in_count, :st_price, :st_put_in_count
+permit_params :app_id, :name, :keywords, :task_steps, :special_price, :start_time, :end_time, :sort, :price, :put_in_count
 #
 # or
 #
