@@ -37,6 +37,7 @@ module API
         desc "获取收益汇总"
         params do
           requires :uid, type: String, desc: "用户ID"
+          use :pagination
         end
         get :summary do
           user = Studio.find_by(studio_id:  params[:uid])

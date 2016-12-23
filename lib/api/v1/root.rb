@@ -20,6 +20,7 @@ module API
       
       mount API::V1::StudiosAPI
       mount API::V1::AppTasksAPI
+      mount API::V1::EarningsAPI
       
       # 
       # 配合trix文本编辑器
