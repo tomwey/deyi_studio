@@ -6,6 +6,7 @@ class AppTask < ActiveRecord::Base
   scope :current, -> { where('start_time < :time and end_time > :time', time: Time.zone.now) }
   scope :after, -> { where('start_time > ?', Time.zone.now) }
   # scope :filter_for_st, ->(st) { where("#{st == 0 ? 'put_in_count' : 'st_put_in_count'} != 0") }
+  scope :on_sale, -> { where.not(put_in_count: 0) }
   scope :sorted, -> { order('sort desc') }
   scope :recent, -> { order('id desc') }
   
@@ -20,16 +21,16 @@ class AppTask < ActiveRecord::Base
     end while self.class.exists?(:task_id => task_id)
   end
   
-  # def change_st_grab_count(n)
-  #   count = self.st_grab_count + n
-  #   if count >= 0
-  #     self.update_attribute(:st_grab_count, count)
-  #   end
-  # end
+  def change_grab_count(n)
+    count = self.grab_count + n
+    if count >= 0
+      self.update_attribute(:grab_count, count)
+    end
+  end
   
-  # def in_progress?(ip)
-  #   $redis.get("#{task_id}:#{ip}").to_s == '1'
-  # end
+  def in_progress?(uid, ip)
+    $redis.get("#{uid}:#{ip}").to_s == self.task_id.to_s
+  end
   #
   # def mark_done(ip)
   #   $redis.del("#{task_id}:#{ip}")

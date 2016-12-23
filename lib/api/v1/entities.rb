@@ -135,19 +135,13 @@ module API
           model.app.url_scheme || ''
         end
         expose :name, :keywords, :task_steps
-        expose :price do |model, opts|
-          opts[:st] == 0 ? model.price : model.st_price
-        end
+        expose :price
         expose :special_price
-        expose :put_in_count do |model, opts|
-          opts[:st] == 0 ? model.put_in_count : model.st_put_in_count
-        end
-        expose :grab_count do |model, opts|
-          opts[:st] == 0 ? model.grab_count : model.st_grab_count
-        end
+        expose :put_in_count
+        expose :grab_count
         expose :in_progress do |model, opts|
-          if opts[:ip]
-            model.in_progress?(opts[:ip])
+          if opts[:ip] && opts[:uid]
+            model.in_progress?(opts[:uid], opts[:ip])
           else
             false
           end
