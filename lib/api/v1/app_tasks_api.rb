@@ -17,7 +17,7 @@ module API
           end
           
           @progress_task = AppTask.find_by(task_id: $redis.get("#{u.studio_id}:#{client_ip}"))
-          
+          puts @progress_task
           @current_tasks = AppTask.current.on_sale.sorted.recent
           if @progress_task
             @current_tasks = @current_tasks.where.not(task_id: @progress_task.task_id)
