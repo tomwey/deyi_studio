@@ -140,19 +140,22 @@ module API
         expose :special_price
         expose :put_in_count
         expose :grab_count
-        expose :in_progress do |model, opts|
-          if opts[:ip] && opts[:uid]
-            model.in_progress?(opts[:uid], opts[:ip])
-          else
-            false
-          end
-        end
+        # expose :in_progress do |model, opts|
+        #   if opts[:ip] && opts[:uid]
+        #     model.in_progress?(opts[:uid], opts[:ip])
+        #   else
+        #     false
+        #   end
+        # end
         expose :start_time, format_with: :chinese_time
       end
       
       class AppTaskDetail < AppTask
         expose :task_log_id do |model, opts|
-          opts[:opts][:log_id]
+          opts[:log_id] || opts[:opts][:log_id]
+        end
+        expose :expire do |model, opts|
+          opts[:expire_time] || opts[:opts][:expire_time]
         end
       end
       

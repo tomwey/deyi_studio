@@ -10,14 +10,32 @@ module API
           requires :uid, type: String, desc: '工作室ID'
         end
         get :home do
+                    
+          u = Studio.find_by(studio_id: params[:uid])
+          if u.blank?
+            return render_error(4004, '不正确的账号')
+          end
+          
+          @progress_task = AppTask.find_by(task_id: $redis.get("#{u.studio_id}:#{client_ip}"))
           
           @current_tasks = AppTask.current.on_sale.sorted.recent
+          if @progress_task
+            @current_tasks = @current_tasks.where.not(task_id: @progress_task.task_id)
+            @progress_task_log = StudioGrabTask.where(app_task_id: @progress_task.id, state: 'pending').first
+            if @progress_task_log.blank?
+              progress_task = []
+            else
+              progress_task = [API::V1::Entities::AppTaskDetail.represent(@progress_task_log.app_task, log_id: @progress_task_log.id, expire_time: @progress_task_log.expired_at.to_i)]
+            end
+            # progress_task = [API::V1::Entities::AppTask.represent(@progress_task)]
+          else
+            progress_task = []
+          end
+          
           @after_tasks = AppTask.after.on_sale.sorted.recent
           
-          u = Studio.find_by(studio_id: params[:uid])
-          
           if @current_tasks.any?
-            current_tasks = API::V1::Entities::AppTask.represent(@current_tasks, ip: client_ip, uid: u.studio_id)
+            current_tasks = API::V1::Entities::AppTask.represent(@current_tasks)
           else
             current_tasks = []
           end
@@ -34,7 +52,7 @@ module API
             completed_tasks = []
           end
           
-          { code: 0, message: 'ok', data: { current: current_tasks, after: after_tasks, completed: completed_tasks } }
+          { code: 0, message: 'ok', data: { progress: progress_task, current: current_tasks, after: after_tasks, completed: completed_tasks } }
         end # end get home
         
         desc "抢任务"
@@ -63,12 +81,12 @@ module API
             return render_error(1007, '任务已经下架了')
           end
           
-          log = StudioGrabTask.create!(ip: ip, 
-                                       studio: u, 
-                                       app_task: task, 
-                                       expired_at: Time.zone.now + 30.minutes, 
+          log = StudioGrabTask.create!(ip: ip,
+                                       studio: u,
+                                       app_task: task,
+                                       expired_at: Time.zone.now + 30.minutes,
                                        reward: task.price - task.special_price)
-          render_json(log.app_task, API::V1::Entities::AppTaskDetail, log_id: log.id)
+          render_json(log.app_task, API::V1::Entities::AppTaskDetail, log_id: log.id, expire_time: log.expired_at.to_i)
         end # end grab
         
         desc "放弃任务"
