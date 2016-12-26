@@ -5,6 +5,7 @@ module API
         format_with(:null) { |v| v.blank? ? "" : v }
         format_with(:chinese_date) { |v| v.blank? ? "" : v.strftime('%Y-%m-%d') }
         format_with(:chinese_datetime) { |v| v.blank? ? "" : v.strftime('%Y-%m-%d %H:%M:%S') }
+        format_with(:chinese_time) { |v| v.blank? ? "" : v.strftime('%H:%M') }
         format_with(:money_format) { |v| v.blank? ? 0 : ('%.2f' % v).to_f }
         expose :id
         # expose :created_at, format_with: :chinese_datetime
@@ -146,6 +147,7 @@ module API
             false
           end
         end
+        expose :start_time, format_with: :chinese_time
       end
       
       class AppTaskDetail < AppTask
