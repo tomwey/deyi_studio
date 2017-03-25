@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.1
-lock '3.7.0'
+lock '3.7.2'
 
 set :application, 'deyi_studio'
 set :deploy_user, "deployer"

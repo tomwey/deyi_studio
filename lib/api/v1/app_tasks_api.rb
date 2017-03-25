@@ -55,6 +55,25 @@ module API
           { code: 0, message: 'ok', data: { progress: progress_task, current: current_tasks, after: after_tasks, completed: completed_tasks } }
         end # end get home
         
+        desc "获取任务详情"
+        params do
+          requires :uid, type: String, desc: '用户ID或者工作室ID' 
+        end
+        get '/:task_id' do
+          u = Studio.find_by(studio_id: params[:uid])
+          
+          if u.blank?
+            return render_error(4004, '账户不存在')
+          end
+          
+          task = AppTask.find_by(task_id: params[:task_id])
+          if task.blank?
+            return render_error(4004, '任务不存在')
+          end
+          
+          render_json(task, API::V1::Entities::AppTaskDetail)
+        end
+        
         desc "抢任务"
         params do
           requires :uid, type: String, desc: '用户ID或者工作室ID'
